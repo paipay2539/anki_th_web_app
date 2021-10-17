@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from card_generator import views
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/'      , admin.site.urls),
+    path(''            , views.home_page),
+    path('home/'       , views.home_page),
+    path('guide/'      , views.guide_page),
+    path('try_it/'     , views.try_it_page),
+    path('shared_deck/', views.shared_deck_page),
 ]
