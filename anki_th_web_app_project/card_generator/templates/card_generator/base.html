@@ -113,6 +113,22 @@
     .center_text {
       text-align: center;
     }
+    #loading {
+      position: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0.95;
+      background-color: #fff;
+      z-index: 99;
+    }
+    #loading-image {
+      z-index: 100;
+    }
 
     /*############################################################################ */
 
@@ -259,7 +275,60 @@
 
     }
     // alert_box(1,2,3)
-   
+
+    $('#loading').hide();
+
+    function show_loading_generate(){
+      if(document.getElementById("input_text_id").value != ''){
+        if (button_en_th_status === "ON" || button_jp_th_status === "ON"){
+          document.getElementById("form1").submit();
+          $('#loading').show();
+        }
+        else{
+          alert("Please select Mode.");
+        }
+      }
+      else{
+        alert("Please fill input before generate.");
+      }
+    }
+
+    function show_loading_txt(){
+      if(document.getElementById("output_text_id").value != ''){
+        document.getElementById("form2").submit();
+      }
+      else{
+        alert("Please generate output before download.");
+      }
+    }
+    function show_loading_mp3(){
+      if(document.getElementById("output_text_id").value == ''){
+        $('#loading').show();
+        $("#tk").val($("[name='csrfmiddlewaretoken']").val());
+       
+        document.getElementById("form3").submit();
+        $("[name='csrfmiddlewaretoken']").val($("#loading").val());
+
+      }
+      else{
+        alert("Please generate output before download.");
+      }
+    }
+
+    $.ajaxSetup({
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+    
+    $(window).focus(function(){
+      if($("#tk").val() == $("[name='csrfmiddlewaretoken']").val()){
+        location.reload();
+      }
+    });
+
+    $(window).keypress(function(){
+      alert($("[name='csrfmiddlewaretoken']").val() + "@@@@@" +  $("#tk").val());
+    });
 
     /* ######################################################################################## */
   </script>
