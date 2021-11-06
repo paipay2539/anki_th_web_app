@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%tow39--f49*@q^))0&-7btv=izfa1pwbt82)7mct&tsnn2c#%
 DEBUG = True
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["localhost", "192.168.1.104", '127.0.0.1']
+ALLOWED_HOSTS = ["localhost", "192.168.1.104", '127.0.0.1', 'anki-th-web-app.herokuapp.com',]
 
 
 # Application definition
@@ -138,3 +138,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "card_generator//static"),
 ]
+
+# for deploying
+MIDDLEWARE_CLASSES = (
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+)
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
