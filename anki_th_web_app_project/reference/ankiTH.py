@@ -226,33 +226,37 @@ def ankiTH(input_text, gen_sound=False, exactly_mode=False, lang_select="jp"):
 def gen_apkg():
     # need to run from cd reference ( run from outer will can't use relative path)
     # where run script, that is workspace path
-    ankiTH("data/input/text_temp", gen_sound=True, exactly_mode=False, lang_select="jp") 
+    # ankiTH("data/input/text_temp", gen_sound=True, exactly_mode=False, lang_select="jp") 
     my_model = genanki.Model(
                     1091735104,
                     'Simple Model with Media',
                     fields=[
-                        {'name': 'Question'},
-                        {'name': 'Answer'},
-                        {'name': 'MyMedia'},
+                        {'name': 'หน้า'},
+                        {'name': 'ย้อนกลับ'},
+                        {'name': 'furigana'},
                     ],
                     templates=[
                         {
-                        'name': 'Card 1',
-                        'qfmt': '{{Question}}<br>{{MyMedia}}',
-                        'afmt': '{{FrontSide}}<hr id="answer">{{Answer}}',
+                        'name': 'anki_th_card',
+                        'qfmt': '{{หน้า}}',
+                        'afmt': '{{furigana}}<hr>{{ย้อนกลับ}}',
                         },
-                    ])
-    my_note = genanki.Note(model=my_model, fields=['Capital of Argentina', 'Buenos Aires', 'Buenos Aires'])
+                    ],
+                    css='.card {font-family: arial;font-size: 20px;text-align: center;color: black;background-color: white;}'
+                    )
+    my_deck = genanki.Deck(1091735104, 'anki_th')
+    my_package = genanki.Package(my_deck)
     
-    my_deck = genanki.Deck(1091735104, 'Country Capitals')
-    my_deck.add_note(my_note)
-    genanki.Package(my_deck).write_to_file('output.apkg')
-    
-    #my_package = genanki.Package(my_deck)
-    #my_package.media_files = ['//data/sound/#text_temp_0.mp3']  
-    
-    
-    
+    deck_list = read_txt("data/output/text_temp_output.txt")
+    for n, card in enumerate(deck_list):
+        card_list = card.split("@")
+        element_list = []
+        for element in card_list: # หน้า หลัง furigana
+            element_list.append(element)
+        my_note = genanki.Note(model=my_model, fields=element_list)
+        my_deck.add_note(my_note)
+        my_package.media_files.append('data/output/sound/#text_temp_'+str(n)+'.mp3')
+    my_package.write_to_file('output.apkg')
     sys.exit()
     
 
