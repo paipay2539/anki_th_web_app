@@ -180,9 +180,9 @@ def ankiTH(input_text, gen_sound=False, exactly_mode=False, lang_select="jp"):
 
     parent_path = os.path.dirname(os.path.dirname(input_text))
     input_text_file_name = os.path.basename(input_text)
-    # input_text_file_name = os.path.splitext(input_text_file_name)[0]
+    input_text_file_name = os.path.splitext(input_text_file_name)[0]
 
-    vocab_lst = read_txt(input_text+'.txt')
+    vocab_lst = read_txt(input_text)
     output = open(parent_path + "/output/" + input_text_file_name +'_output.txt', "w", encoding="utf8")
     fail_output = open(parent_path + "/output/" + input_text_file_name +'_fail_output.txt', "w", encoding="utf8")
 
@@ -223,10 +223,11 @@ def ankiTH(input_text, gen_sound=False, exactly_mode=False, lang_select="jp"):
     # search_vocab_en('carrot')
 
 
-def gen_apkg():
+def gen_apkg(path="data/output/text_temp_output.txt"):
     # need to run from cd reference ( run from outer will can't use relative path)
     # where run script, that is workspace path
-    # ankiTH("data/input/text_temp", gen_sound=True, exactly_mode=False, lang_select="jp") 
+    # ankiTH("data/input/text_temp.txt", gen_sound=True, exactly_mode=False, lang_select="jp") 
+    parent_path = os.path.dirname(path)
     my_model = genanki.Model(
                     1091735104,
                     'Simple Model with Media',
@@ -247,17 +248,19 @@ def gen_apkg():
     my_deck = genanki.Deck(1091735104, 'anki_th')
     my_package = genanki.Package(my_deck)
     
-    deck_list = read_txt("data/output/text_temp_output.txt")
-    for n, card in enumerate(deck_list):
+    deck_list = read_txt(path)
+    for card in deck_list:
         card_list = card.split("@")
         element_list = []
         for element in card_list: # หน้า หลัง furigana
             element_list.append(element)
         my_note = genanki.Note(model=my_model, fields=element_list)
         my_deck.add_note(my_note)
-        my_package.media_files.append('data/output/sound/#text_temp_'+str(n)+'.mp3')
-    my_package.write_to_file('output.apkg')
-    sys.exit()
+        if ".mp3]@" in card:
+            sound_file_name = card[card.find("[sound:")+len("[sound:"):card.find(".mp3]@")]
+            my_package.media_files.append(parent_path+'/sound/'+sound_file_name+'.mp3')
+    my_package.write_to_file(parent_path+'/output.apkg')
+    
     
 
 def main():
@@ -272,7 +275,7 @@ def main():
     directory = 'data/input/'
     for filename in os.listdir(directory):
         if filename.endswith(".txt") and filename in do_list:
-            ankiTH(os.path.splitext(filename)[0],
+            ankiTH(os.path.splitext(filename),
                    gen_sound=True, exactly_mode=False)
 
     # ankiTH('N3_full_jp', gen_sound=True, exactly_mode=False)
@@ -283,4 +286,4 @@ def main():
 
 if __name__ == '__main__':
     gen_apkg()
-    main()
+    # main()
